@@ -1,0 +1,61 @@
+ok: BPI balance = 2000000
+ok: GCash balance = 800000
+ok: Maya balance = 0
+ok: GoTyme Savings balance = 5000000
+ok: Credit card owed = 0
+ok: income this month = 3080000
+ok: expense this month (2,500 + 1,800 + 1,100 - 500) = 490000
+ok: emergency fund saved = 5000000
+ok: trip saved (earmark) = 200000
+ok: water remaining after payment = 0
+ok: pool = BPI + GCash + Maya = 2800000
+ok: earmarks deducted (trip only, not emergency fund) = 200000
+ok: bills reserved (Meralco + PLDT; not paid water, not tuition beyond horizon, not insurance from savings) = 489900
+ok: AVAILABLE TO SPEND = 21,101 = 2110100
+ok: reservation after 1,000 partial Meralco payment = 389900
+ok: available unchanged by paying a reserved bill (no double deduction) = 2110100
+ok (rejected): KABAN: earmarks only apply to spendable accounts (GoTyme Savings is already outside the po
+ok (rejected): KABAN: earmarks (900000) would exceed the account balance (800000)
+ok (rejected): KABAN: release this account's earmarks before marking it non-spendable
+ok (rejected): KABAN: an account dedicated to a savings goal cannot be spendable
+ok (rejected): KABAN: a goal's dedicated account must be non-spendable
+ok (rejected): KABAN: transfer = two entries in different accounts summing to zero, no category
+ok (rejected): KABAN: ledger entries are immutable; void or edit the transaction instead
+ok (rejected): KABAN: account 00000000-0000-0000-0000-000000000000 not available
+ok (rejected): KABAN: expense = one negative entry + an expense category
+ok (rejected): KABAN: expense = one negative entry + an expense category
+ok (rejected): KABAN: payment exceeds remaining due (0 centavos)
+ok (rejected): KABAN: savings_contribution must move money INTO the goal's dedicated account
+ok: retry with same idempotency key returns same id = a754eaf5-e5c8-4152-96cb-a8f0a4548111
+ok: edited original is void = void
+ok: new version points to original = a754eaf5-e5c8-4152-96cb-a8f0a4548111
+ok: expense after edit (4,900 + 1,000 Meralco + 80) = 598000
+ok: GCash now below its 2,000 earmark = 100000
+ok: earmark deduction capped at GCash balance = 100000
+ok: over-earmarked warning raised = t
+ok (rejected): permission denied for table ledger_entries
+ok: Ana cannot see Ben's personal account = 0
+ok: Ben sees 5 shared + his own account = 6
+ok: Ben personal available = 200000
+ok: Ana sees only the shared side of Ben's transfer = 1
+ok: contribution scope = shared
+ok (rejected): KABAN: not allowed to write in this household
+ok: outsider sees no transactions = 0
+ok: outsider sees no accounts = 0
+ok (rejected): KABAN: not a member
+ok: token format = t
+ok (rejected): permission denied for table quick_entry_tokens
+ok (rejected): permission denied for function quick_entry_submit
+ok: shortcut sees expense category names only = 3
+ok: double tap with same key logs once = 3afa9c4e-5cad-43f5-8d25-8901144110dc
+ok: response carries no balances = f
+ok: one quick-entry transaction = 1
+ok: attributed to token owner = 00000000-0000-0000-0000-00000000000b
+ok (rejected): KABAN: invalid token
+ok (rejected): KABAN: amount must be between 1 and 2000000 centavos
+ok (rejected): KABAN: type not allowed for this token
+ok (rejected): KABAN: account not allowed for this token
+ok (rejected): KABAN: invalid token
+ok (rejected): KABAN: invalid token
+ok: token auto-revoked on member removal = t
+=== ALL KABAN SCENARIO TESTS PASSED ===

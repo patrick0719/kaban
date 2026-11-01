@@ -1,0 +1,62 @@
+@import "tailwindcss";
+@import "@fontsource-variable/instrument-sans";
+
+@theme {
+  --color-paper: #fafaf8;
+  --color-ink: #1d2a2e;
+  --color-line: #e4e3de;
+  --color-muted: #6e7371;
+  --color-jade: #0f6b5c;
+  --color-jade-soft: #e3efeb;
+  --color-rust: #a3362a;
+  --color-rust-soft: #f6e6e3;
+  --font-sans: "Instrument Sans Variable", ui-sans-serif, system-ui, sans-serif;
+}
+
+:root {
+  color-scheme: light;
+}
+
+html,
+body {
+  background: var(--color-paper);
+  color: var(--color-ink);
+}
+
+body {
+  font-family: var(--font-sans);
+  font-feature-settings: "tnum" 1, "lnum" 1; /* columns of pesos line up */
+  -webkit-tap-highlight-color: transparent;
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-jade);
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition: none !important;
+    animation: none !important;
+  }
+}
+
+/* Shared form controls */
+@utility field {
+  @apply w-full rounded-lg border border-line bg-white px-3 py-2.5 text-[16px] outline-none transition-colors focus:border-jade;
+}
+@utility btn {
+  @apply inline-flex items-center justify-center rounded-lg px-4 py-3 text-[15px] font-semibold transition-colors disabled:opacity-50;
+}
+@utility btn-primary {
+  @apply btn bg-jade text-white active:bg-[#0b5549];
+}
+@utility btn-quiet {
+  @apply btn border border-line bg-white text-ink active:bg-line;
+}
+@utility btn-danger {
+  @apply btn border border-rust/30 bg-white text-rust active:bg-rust-soft;
+}

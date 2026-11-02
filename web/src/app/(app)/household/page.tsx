@@ -5,7 +5,8 @@ import { signOut } from "@/app/login/actions";
 import { InviteForm, TokenForm } from "./Forms";
 import { revokeInvite, revokeToken } from "./actions";
 import { ReminderToggle } from "./ReminderToggle";
-import { getVapidPublicKey, setRemindDays } from "./reminders";
+import { getVapidPublicKey } from "./reminders";
+import { RemindDays } from "./RemindDays";
 
 const ROLE: Record<string, string> = { owner: "Owner", admin: "Admin", member: "Member", viewer: "Viewer" };
 
@@ -52,22 +53,7 @@ export default async function HouseholdPage() {
         <div className="pt-3">
           <ReminderToggle vapidKey={vapidKey} />
         </div>
-        {isAdmin ? (
-          <form action={setRemindDays} className="mt-4 flex items-center justify-between gap-3 text-[15px]">
-            <label htmlFor="days">Remind before the due date</label>
-            <span className="flex items-center gap-2">
-              <select id="days" name="days" defaultValue={String(household.remind_days_before)} className="field w-auto py-2">
-                <option value="0">Same day only</option>
-                <option value="1">1 day</option>
-                <option value="2">2 days</option>
-                <option value="3">3 days</option>
-                <option value="5">5 days</option>
-                <option value="7">7 days</option>
-              </select>
-              <button className="text-[14px] text-jade underline underline-offset-4">Save</button>
-            </span>
-          </form>
-        ) : null}
+        {isAdmin && <RemindDays current={household.remind_days_before} />}
         <p className="mt-3 text-[13px] text-muted">
           {household.remind_days_before === 0
             ? "You get a reminder on the due date, and the day after if a bill is still unpaid."

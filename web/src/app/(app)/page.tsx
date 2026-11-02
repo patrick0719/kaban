@@ -3,6 +3,8 @@ import { getAccounts, getContext, groupAccounts } from "@/lib/context";
 import { getTransactions, describe } from "@/lib/transactions";
 import { amountText, peso, shortDate, todayManila } from "@/lib/money";
 import { TxnRow } from "@/components/TxnRow";
+import { Progress } from "@/components/Progress";
+import { getGoals, percent } from "@/lib/goals";
 import { Wordmark } from "@/components/Wordmark";
 
 type Available = {
@@ -21,7 +23,7 @@ export default async function Dashboard() {
   const today = todayManila();
   const monthStart = `${today.slice(0, 7)}-01`;
 
-  const [avail, summary, accounts, recent, bills] = await Promise.all([
+  const [avail, summary, accounts, recent, bills, { goals }] = await Promise.all([
     supabase.rpc("available_to_spend", { p_household: householdId, p_scope: "all" }).single<Available>(),
     supabase
       .rpc("monthly_summary", { p_household: householdId, p_month: monthStart })
@@ -35,6 +37,7 @@ export default async function Dashboard() {
       .gt("remaining", 0)
       .lte("due_on", addDays(today, 120))
       .order("due_on"),
+    getGoals(supabase, householdId),
   ]);
 
   const a = avail.data;
@@ -120,6 +123,38 @@ export default async function Dashboard() {
                 </Link>
               </li>
             ))}
+          </ul>
+        </section>
+      )}
+
+      {goals.length > 0 && (
+        <section className="mt-8">
+          <div className="flex items-baseline justify-between">
+            <h2 className="text-[17px] font-semibold">Goals</h2>
+            <Link href="/goals" className="text-[13px] text-jade">
+              See all
+            </Link>
+          </div>
+          <ul className="mt-3 space-y-4">
+            {goals
+              .slice()
+              .sort((x, y) => percent(y) - percent(x))
+              .slice(0, 3)
+              .map((g) => (
+                <li key={g.goal_id}>
+                  <Link href={`/goals/${g.goal_id}`} className="block">
+                    <span className="flex items-baseline justify-between text-[15px]">
+                      <span className="truncate">{g.name}</span>
+                      <span className="shrink-0 pl-3 text-[13px] text-muted">
+                        {peso(g.saved)} of {peso(g.target_amount)}
+                      </span>
+                    </span>
+                    <span className="mt-1.5 block">
+                      <Progress value={percent(g)} label={`${g.name} progress`} />
+                    </span>
+                  </Link>
+                </li>
+              ))}
           </ul>
         </section>
       )}

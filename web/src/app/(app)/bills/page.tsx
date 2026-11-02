@@ -2,6 +2,7 @@ import Link from "next/link";
 import { getContext } from "@/lib/context";
 import { daysBetween, getBillOverview, type Occurrence } from "@/lib/bills";
 import { peso, shortDate, todayManila } from "@/lib/money";
+import { PlanTabs } from "@/components/PlanTabs";
 
 export default async function BillsPage() {
   const ctx = await getContext();
@@ -13,6 +14,7 @@ export default async function BillsPage() {
 
   return (
     <div>
+      <PlanTabs current="/bills" />
       <div className="flex items-center justify-between">
         <h1 className="text-[24px] font-semibold tracking-tight">Bills</h1>
         {ctx.canWrite && (

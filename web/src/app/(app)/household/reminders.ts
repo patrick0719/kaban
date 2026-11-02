@@ -61,11 +61,13 @@ export async function sendTestReminder(): Promise<{ ok?: string; error?: string 
   }
 }
 
-export async function setRemindDays(form: FormData) {
+export async function setRemindDays(_: { ok?: string; error?: string }, form: FormData): Promise<{ ok?: string; error?: string }> {
   const { supabase, householdId, isAdmin } = await getContext();
-  if (!isAdmin) return;
+  if (!isAdmin) return { error: "Only owners and admins can change this." };
   const days = Number(form.get("days"));
-  if (!Number.isInteger(days) || days < 0 || days > 14) return;
-  await supabase.from("households").update({ remind_days_before: days }).eq("id", householdId);
+  if (!Number.isInteger(days) || days < 0 || days > 14) return { error: "Choose a number of days." };
+  const { error } = await supabase.from("households").update({ remind_days_before: days }).eq("id", householdId);
+  if (error) return { error: "Could not save. Try again." };
   revalidatePath("/household");
+  return { ok: days === 0 ? "Saved. Reminders come on the due date." : `Saved. Reminders come ${days} day${days === 1 ? "" : "s"} before.` };
 }

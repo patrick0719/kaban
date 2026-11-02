@@ -12,7 +12,7 @@ export function VoidButton({ id }: { id: string }) {
   if (!confirming) {
     return (
       <button type="button" className="btn-danger w-full" onClick={() => setConfirming(true)}>
-        I-void ang talang ito
+        Void this entry
       </button>
     );
   }
@@ -20,16 +20,16 @@ export function VoidButton({ id }: { id: string }) {
     <form onSubmit={onSubmit} className="space-y-3 rounded-lg border border-rust/30 bg-rust-soft/40 p-4">
       <input type="hidden" name="id" value={id} />
       <p className="text-[14px]">
-        Mawawala ito sa balanse at sa mga report. Mananatili ito sa history bilang void, kaya puwede pa ring makita.
+        It will be removed from balances and reports. It stays in history, marked as void.
       </p>
-      <input name="reason" maxLength={120} placeholder="Bakit? (hal. test lang, doble)" className="field" />
+      <input name="reason" maxLength={120} placeholder="Why? (e.g. test entry, duplicate)" className="field" />
       {state.error && <p className="text-sm text-rust">{state.error}</p>}
       <div className="grid grid-cols-2 gap-2">
         <button type="button" className="btn-quiet" onClick={() => setConfirming(false)}>
-          Huwag na
+          Cancel
         </button>
         <button className="btn bg-rust text-white" disabled={pending || !ready}>
-          {pending ? "Vino-void…" : "I-void"}
+          {pending ? "Voiding…" : "Void"}
         </button>
       </div>
     </form>

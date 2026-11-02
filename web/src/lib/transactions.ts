@@ -71,7 +71,7 @@ export function describe(t: Txn, accounts: Map<string, Account>): TxnView {
     case "expense":
     case "bill_payment":
       return {
-        title: t.categories?.name ?? "Gastos",
+        title: t.categories?.name ?? "Expense",
         detail: [first ? name(first.account_id) : null, t.description].filter(Boolean).join(", "),
         amount: total,
         tone: "out",
@@ -79,7 +79,7 @@ export function describe(t: Txn, accounts: Map<string, Account>): TxnView {
     case "income":
     case "refund":
       return {
-        title: t.type === "refund" ? `Refund: ${t.categories?.name ?? ""}`.trim() : (t.categories?.name ?? "Kita"),
+        title: t.type === "refund" ? `Refund: ${t.categories?.name ?? ""}`.trim() : (t.categories?.name ?? "Income"),
         detail: [first ? name(first.account_id) : null, t.description].filter(Boolean).join(", "),
         amount: total,
         tone: "in",
@@ -91,13 +91,13 @@ export function describe(t: Txn, accounts: Map<string, Account>): TxnView {
       const toAcc = to ? accounts.get(to.account_id) : undefined;
       const title =
         t.type === "savings_contribution"
-          ? "Inipon"
+          ? "Savings deposit"
           : toAcc?.class === "liability"
-            ? `Bayad sa ${toAcc.name}`
-            : "Lipat";
+            ? `Paid ${toAcc.name}`
+            : "Transfer";
       return {
         title,
-        detail: `${from ? name(from.account_id) : "?"} papunta sa ${to ? name(to.account_id) : "?"}`,
+        detail: `${from ? name(from.account_id) : "?"} to ${to ? name(to.account_id) : "?"}`,
         amount: Math.abs(Number(to?.amount ?? from?.amount ?? 0)),
         tone: "move",
       };
@@ -105,7 +105,7 @@ export function describe(t: Txn, accounts: Map<string, Account>): TxnView {
     case "opening_balance":
     case "adjustment":
       return {
-        title: t.type === "opening_balance" ? "Simulang balanse" : "Pagtatama ng balanse",
+        title: t.type === "opening_balance" ? "Opening balance" : "Balance correction",
         detail: first ? name(first.account_id) : "",
         amount: total,
         tone: "move",

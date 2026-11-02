@@ -28,20 +28,20 @@ export function todayManila(): string {
   return new Intl.DateTimeFormat("en-CA", { timeZone: "Asia/Manila" }).format(new Date());
 }
 
-const dayFmt = new Intl.DateTimeFormat("fil-PH", { month: "short", day: "numeric", timeZone: "UTC" });
-const longDayFmt = new Intl.DateTimeFormat("fil-PH", {
+const dayFmt = new Intl.DateTimeFormat("en-PH", { month: "short", day: "numeric", timeZone: "UTC" });
+const longDayFmt = new Intl.DateTimeFormat("en-PH", {
   weekday: "long",
   month: "long",
   day: "numeric",
   timeZone: "UTC",
 });
 
-/** "2026-11-16" -> "Nob 16" */
+/** "2026-11-16" -> "Nov 16" */
 export function shortDate(iso: string): string {
   return dayFmt.format(new Date(`${iso}T00:00:00Z`));
 }
 
-/** "2026-11-01" -> "Linggo, Nobyembre 1" */
+/** "2026-11-01" -> "Sunday, November 1" */
 export function longDate(iso: string): string {
   return longDayFmt.format(new Date(`${iso}T00:00:00Z`));
 }

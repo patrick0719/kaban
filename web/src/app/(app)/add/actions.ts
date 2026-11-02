@@ -18,8 +18,8 @@ export async function addTransaction(_: AddState, form: FormData): Promise<AddSt
   const note = String(form.get("note") ?? "").trim() || null;
   const key = String(form.get("request_id") ?? "") || null;
 
-  if (!amount || amount <= 0) return { error: "Ilagay kung magkano. Halimbawa: 150 o 1,250.50" };
-  if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) return { error: "Pumili ng petsa." };
+  if (!amount || amount <= 0) return { error: "Enter an amount, like 150 or 1,250.50." };
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) return { error: "Choose a date." };
 
   let p_type: string;
   let p_entries: { account_id: string; amount: number }[];
@@ -28,8 +28,8 @@ export async function addTransaction(_: AddState, form: FormData): Promise<AddSt
   if (kind === "transfer") {
     const from = String(form.get("from") ?? "");
     const to = String(form.get("to") ?? "");
-    if (!from || !to) return { error: "Pumili kung saan galing at saan papunta." };
-    if (from === to) return { error: "Magkaiba dapat ang galing at papunta." };
+    if (!from || !to) return { error: "Choose where the money comes from and where it goes." };
+    if (from === to) return { error: "From and To must be different accounts." };
     p_type = "transfer";
     p_entries = [
       { account_id: from, amount: -amount },
@@ -38,8 +38,8 @@ export async function addTransaction(_: AddState, form: FormData): Promise<AddSt
   } else {
     const account = String(form.get("account") ?? "");
     p_category_id = String(form.get("category") ?? "") || null;
-    if (!account) return { error: "Pumili ng account." };
-    if (!p_category_id) return { error: "Pumili ng category." };
+    if (!account) return { error: "Choose an account." };
+    if (!p_category_id) return { error: "Choose a category." };
     p_type = kind === "income" ? "income" : "expense";
     p_entries = [{ account_id: account, amount: kind === "income" ? amount : -amount }];
   }

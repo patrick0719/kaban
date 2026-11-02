@@ -17,7 +17,7 @@ export default async function TransactionsPage({ searchParams }: { searchParams:
   const days = new Map<string, typeof txns>();
   for (const t of txns) days.set(t.occurred_on, [...(days.get(t.occurred_on) ?? []), t]);
 
-  const label = new Intl.DateTimeFormat("fil-PH", { month: "long", year: "numeric", timeZone: "UTC" }).format(
+  const label = new Intl.DateTimeFormat("en-PH", { month: "long", year: "numeric", timeZone: "UTC" }).format(
     new Date(`${from}T00:00:00Z`),
   );
   const isCurrent = month === todayManila().slice(0, 7);
@@ -25,21 +25,21 @@ export default async function TransactionsPage({ searchParams }: { searchParams:
   return (
     <div>
       <div className="flex items-center justify-between">
-        <Link href={`/transactions?m=${shiftMonth(month, -1)}`} aria-label="Nakaraang buwan" className="-ml-2 p-2 text-muted">
+        <Link href={`/transactions?m=${shiftMonth(month, -1)}`} aria-label="Previous month" className="-ml-2 p-2 text-muted">
           <Chevron flip />
         </Link>
         <h1 className="text-[20px] font-semibold tracking-tight">{label}</h1>
         {isCurrent ? (
           <span className="w-9" />
         ) : (
-          <Link href={`/transactions?m=${shiftMonth(month, 1)}`} aria-label="Susunod na buwan" className="-mr-2 p-2 text-muted">
+          <Link href={`/transactions?m=${shiftMonth(month, 1)}`} aria-label="Next month" className="-mr-2 p-2 text-muted">
             <Chevron />
           </Link>
         )}
       </div>
 
       {days.size === 0 ? (
-        <p className="mt-10 text-center text-[15px] text-muted">Walang naitala sa buwang ito.</p>
+        <p className="mt-10 text-center text-[15px] text-muted">Nothing recorded this month.</p>
       ) : (
         [...days.entries()].map(([day, list]) => {
           const spent = list
@@ -49,7 +49,7 @@ export default async function TransactionsPage({ searchParams }: { searchParams:
             <section key={day} className="mt-6">
               <h2 className="flex items-baseline justify-between border-b border-line pb-1.5 text-[13px] text-muted">
                 <span>{longDate(day)}</span>
-                {spent > 0 && <span>Gastos {peso(spent)}</span>}
+                {spent > 0 && <span>Spent {peso(spent)}</span>}
               </h2>
               <ul className="divide-y divide-line">
                 {list.map((t) => (

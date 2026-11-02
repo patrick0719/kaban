@@ -4,7 +4,7 @@ import { signOut } from "@/app/login/actions";
 import { InviteForm, TokenForm } from "./Forms";
 import { revokeInvite, revokeToken } from "./actions";
 
-const ROLE: Record<string, string> = { owner: "May-ari", admin: "Admin", member: "Member", viewer: "Viewer" };
+const ROLE: Record<string, string> = { owner: "Owner", admin: "Admin", member: "Member", viewer: "Viewer" };
 
 export default async function HouseholdPage() {
   const ctx = await getContext();
@@ -36,11 +36,11 @@ export default async function HouseholdPage() {
       <h1 className="text-[24px] font-semibold tracking-tight">{household.name}</h1>
 
       <section className="mt-7">
-        <h2 className="border-b border-line pb-1.5 text-[13px] text-muted">Mga kasama</h2>
+        <h2 className="border-b border-line pb-1.5 text-[13px] text-muted">Members</h2>
         <ul className="divide-y divide-line">
           {(members ?? []).map((m) => (
             <li key={m.user_id} className="flex items-baseline justify-between py-3 text-[15px]">
-              <span className="truncate">{m.user_id === user.id ? `Ikaw (${user.email})` : (emailOf.get(m.user_id) ?? "Kasama")}</span>
+              <span className="truncate">{m.user_id === user.id ? `You (${user.email})` : (emailOf.get(m.user_id) ?? "Member")}</span>
               <span className="shrink-0 pl-3 text-[13px] text-muted">{ROLE[m.role]}</span>
             </li>
           ))}
@@ -49,13 +49,13 @@ export default async function HouseholdPage() {
               <span className="min-w-0">
                 <span className="block truncate">{i.email}</span>
                 <span className="block text-[13px] text-muted">
-                  Hindi pa sumasali. Valid ang invite hanggang {shortDate(i.expires_at.slice(0, 10))}.
+                  Not joined yet. Invite valid until {shortDate(i.expires_at.slice(0, 10))}.
                 </span>
               </span>
               {isAdmin && (
                 <form action={revokeInvite}>
                   <input type="hidden" name="id" value={i.id} />
-                  <button className="text-[13px] text-rust underline underline-offset-2">Bawiin</button>
+                  <button className="text-[13px] text-rust underline underline-offset-2">Cancel invite</button>
                 </form>
               )}
             </li>
@@ -69,34 +69,34 @@ export default async function HouseholdPage() {
       </section>
 
       <section className="mt-10">
-        <h2 className="border-b border-line pb-1.5 text-[13px] text-muted">Back Tap mo</h2>
+        <h2 className="border-b border-line pb-1.5 text-[13px] text-muted">Your Back Tap</h2>
         <ul className="divide-y divide-line">
           {liveTokens.map((t) => (
             <li key={t.id} className="flex items-baseline justify-between gap-3 py-3 text-[15px]">
               <span className="min-w-0">
                 <span className="block truncate">{t.label}</span>
                 <span className="block text-[13px] text-muted">
-                  {t.last_used_at ? `Huling gamit ${shortDate(t.last_used_at.slice(0, 10))}` : "Hindi pa nagagamit"}, valid hanggang{" "}
+                  {t.last_used_at ? `Last used ${shortDate(t.last_used_at.slice(0, 10))}` : "Not used yet"}, valid until{" "}
                   {shortDate(t.expires_at.slice(0, 10))}
                 </span>
               </span>
               <form action={revokeToken}>
                 <input type="hidden" name="id" value={t.id} />
-                <button className="text-[13px] text-rust underline underline-offset-2">I-revoke</button>
+                <button className="text-[13px] text-rust underline underline-offset-2">Revoke</button>
               </form>
             </li>
           ))}
         </ul>
         <p className="mb-3 mt-3 text-[13px] text-muted">
           {liveTokens.length === 0
-            ? "Wala kang aktibong Back Tap token. Gumawa ng isa para sa shortcut sa iPhone mo."
-            : "Kapag nawala o napalitan ang phone, i-revoke ang token niya at gumawa ng bago."}
+            ? "You have no active Back Tap token. Create one for the shortcut on your iPhone."
+            : "If a phone is lost or replaced, revoke its token and create a new one."}
         </p>
         <TokenForm />
       </section>
 
       <form action={signOut} className="mt-12">
-        <button className="btn-quiet w-full">Mag-log out</button>
+        <button className="btn-quiet w-full">Log out</button>
       </form>
     </div>
   );

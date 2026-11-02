@@ -6,14 +6,14 @@ import { amountText, longDate } from "@/lib/money";
 import { VoidButton } from "./VoidButton";
 
 const TYPE_LABEL: Record<string, string> = {
-  expense: "Gastos",
-  bill_payment: "Bayad sa bill",
-  income: "Kita",
+  expense: "Expense",
+  bill_payment: "Bill payment",
+  income: "Income",
   refund: "Refund",
-  transfer: "Lipat",
-  savings_contribution: "Inipon",
-  opening_balance: "Simulang balanse",
-  adjustment: "Pagtatama ng balanse",
+  transfer: "Transfer",
+  savings_contribution: "Savings deposit",
+  opening_balance: "Opening balance",
+  adjustment: "Balance correction",
 };
 
 export default async function TransactionPage({ params }: { params: Promise<{ id: string }> }) {
@@ -30,7 +30,7 @@ export default async function TransactionPage({ params }: { params: Promise<{ id
   return (
     <div>
       <Link href="/transactions" className="text-[14px] text-muted">
-        Bumalik sa talaan
+        Back to activity
       </Link>
 
       <p className="mt-6 text-[15px] text-muted">{TYPE_LABEL[t.type]}</p>
@@ -40,13 +40,13 @@ export default async function TransactionPage({ params }: { params: Promise<{ id
       <p className="mt-2 text-[17px] font-medium">{v.title}</p>
 
       <dl className="mt-6 divide-y divide-line border-y border-line text-[15px]">
-        <Row label="Petsa" value={longDate(t.occurred_on)} />
+        <Row label="Date" value={longDate(t.occurred_on)} />
         <Row label="Account" value={v.detail || "—"} />
-        {t.description && <Row label="Tala" value={t.description} />}
-        <Row label="Itinala ni" value={mine ? "Ikaw" : "Ibang member"} />
-        <Row label="Paano" value={t.source === "quick_entry" ? "Back Tap" : "Sa app"} />
+        {t.description && <Row label="Note" value={t.description} />}
+        <Row label="Recorded by" value={mine ? "You" : "Another member"} />
+        <Row label="Recorded with" value={t.source === "quick_entry" ? "Back Tap" : "App"} />
         {t.status === "void" && <Row label="Status" value="Void" />}
-        {t.status === "scheduled" && <Row label="Status" value="Naka-schedule" />}
+        {t.status === "scheduled" && <Row label="Status" value="Scheduled" />}
       </dl>
 
       {canVoid && (

@@ -41,7 +41,7 @@ export default async function Dashboard() {
   // Same window the reservation uses, so the list explains the "Nakareserba" line.
   const dueBills = (bills.data ?? []).filter((b) => !a || b.due_on <= a.horizon);
   const byId = new Map(accounts.map((x) => [x.id, x]));
-  const monthName = new Intl.DateTimeFormat("fil-PH", { month: "long", timeZone: "Asia/Manila" }).format(new Date());
+  const monthName = new Intl.DateTimeFormat("en-PH", { month: "long", timeZone: "Asia/Manila" }).format(new Date());
 
   return (
     <div>
@@ -55,43 +55,43 @@ export default async function Dashboard() {
         {a ? (
           <>
             <dl className="space-y-2 text-[15px]">
-              <Line label="Pera sa mga account" value={a.spendable_balance} />
-              {a.bills_reserved > 0 && <Line label="Nakareserba sa bayarin" value={-a.bills_reserved} />}
-              {a.card_debt > 0 && <Line label="Utang sa credit card" value={-a.card_debt} />}
-              {a.earmarked > 0 && <Line label="Itinabi para sa ipon" value={-a.earmarked} />}
+              <Line label="Money in accounts" value={a.spendable_balance} />
+              {a.bills_reserved > 0 && <Line label="Set aside for bills" value={-a.bills_reserved} />}
+              {a.card_debt > 0 && <Line label="Credit card debt" value={-a.card_debt} />}
+              {a.earmarked > 0 && <Line label="Earmarked for savings" value={-a.earmarked} />}
             </dl>
             <div className="mt-4 border-t-2 border-ink pt-3">
               <h1 id="avail-title" className="text-[15px] font-medium">
-                {a.available < 0 ? "Kulang" : "Puwedeng gastusin"}
+                {a.available < 0 ? "Short by" : "Safe to spend"}
               </h1>
               <p
                 className={`mt-1 text-[44px] font-semibold leading-none tracking-tight ${
                   a.available < 0 ? "text-rust" : ""
                 }`}
               >
-                <span className="mr-1 align-top text-[24px] font-medium">{a.available < 0 ? "−₱" : "₱"}</span>
+                <span className="mr-1 align-top text-[24px] font-medium">₱</span>
                 {amountText(a.available)}
               </p>
               <p className="mt-2 text-[13px] text-muted">
-                Kasama ang mga bayarin hanggang {shortDate(a.horizon)}.
-                {a.over_earmarked && " May account na kulang na sa itinabi para sa ipon."}
+                Includes bills due by {shortDate(a.horizon)}.
+                {a.over_earmarked && " One account holds less than its savings earmark."}
               </p>
             </div>
           </>
         ) : (
-          <p className="text-muted">Hindi makuha ang balanse. Subukang i-refresh.</p>
+          <p className="text-muted">Could not load your balances. Try refreshing.</p>
         )}
       </section>
 
       <section className="mt-10 border-y border-line py-4">
-        <h2 className="text-[13px] text-muted">Ngayong {monthName}</h2>
+        <h2 className="text-[13px] text-muted">{monthName} so far</h2>
         <div className="mt-2 grid grid-cols-2">
         <div>
-          <p className="text-[13px] text-muted">Kita</p>
+          <p className="text-[13px] text-muted">Income</p>
           <p className="mt-0.5 text-[18px] font-semibold text-jade">{peso(summary.data?.income ?? 0)}</p>
         </div>
         <div className="border-l border-line pl-4">
-          <p className="text-[13px] text-muted">Gastos</p>
+          <p className="text-[13px] text-muted">Spent</p>
           <p className="mt-0.5 text-[18px] font-semibold">{peso(summary.data?.expense ?? 0)}</p>
         </div>
         </div>
@@ -99,14 +99,14 @@ export default async function Dashboard() {
 
       {dueBills.length > 0 && (
         <section className="mt-8">
-          <h2 className="text-[17px] font-semibold">Mga bayarin</h2>
+          <h2 className="text-[17px] font-semibold">Upcoming bills</h2>
           <ul className="mt-2 divide-y divide-line">
             {dueBills.map((b) => (
               <li key={b.id} className="flex items-baseline justify-between py-2.5 text-[15px]">
                 <span>
                   {b.name}
                   <span className={`ml-2 text-[13px] ${b.due_on < today ? "text-rust" : "text-muted"}`}>
-                    {b.due_on < today ? "lampas na, " : ""}
+                    {b.due_on < today ? "overdue, " : ""}
                     {shortDate(b.due_on)}
                   </span>
                 </span>
@@ -121,7 +121,7 @@ export default async function Dashboard() {
         <div className="flex items-baseline justify-between">
           <h2 className="text-[17px] font-semibold">Accounts</h2>
           <Link href="/accounts" className="text-[13px] text-jade">
-            Lahat
+            See all
           </Link>
         </div>
         <ul className="mt-2 divide-y divide-line">
@@ -135,7 +135,7 @@ export default async function Dashboard() {
                   <span className="ml-2 text-[13px] text-muted">{list.length}</span>
                 </span>
                 <span className={isDebt && total < 0 ? "text-rust" : ""}>
-                  {isDebt ? (total < 0 ? `Utang ${peso(-total)}` : "Walang utang") : peso(total)}
+                  {isDebt ? (total < 0 ? `Owe ${peso(-total)}` : "No debt") : peso(total)}
                 </span>
               </li>
             );
@@ -145,15 +145,14 @@ export default async function Dashboard() {
 
       <section className="mt-8">
         <div className="flex items-baseline justify-between">
-          <h2 className="text-[17px] font-semibold">Kamakailan</h2>
+          <h2 className="text-[17px] font-semibold">Recent</h2>
           <Link href="/transactions" className="text-[13px] text-jade">
-            Lahat
+            See all
           </Link>
         </div>
         {recent.length === 0 ? (
           <p className="mt-3 text-[15px] text-muted">
-            Wala pang naitala. Pindutin ang <span className="font-medium text-ink">Itala</span> sa ibaba, o i-Back Tap ang
-            iPhone mo.
+            Nothing recorded yet. Tap <span className="font-medium text-ink">Add</span> below, or Back Tap your iPhone.
           </p>
         ) : (
           <ul className="mt-1 divide-y divide-line">

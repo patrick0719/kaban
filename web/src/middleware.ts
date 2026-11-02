@@ -23,9 +23,10 @@ export async function middleware(request: NextRequest) {
     },
   );
 
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  // getClaims() verifies the session token's signature. With Supabase's asymmetric
+  // signing keys this happens locally (no network trip); otherwise it asks Auth.
+  const { data } = await supabase.auth.getClaims();
+  const user = data?.claims?.sub ? data.claims : null;
 
   const isLogin = request.nextUrl.pathname.startsWith("/login");
   if (!user && !isLogin) {

@@ -11,12 +11,12 @@ export async function invite(_: FormState, form: FormData): Promise<FormState> {
   if (!isAdmin) return { error: friendly("only owners and admins") };
   const email = String(form.get("email") ?? "").trim().toLowerCase();
   const role = String(form.get("role") ?? "member");
-  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return { error: "Ilagay ang buong email address." };
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return { error: "Enter a full email address." };
 
   const { error } = await supabase.rpc("invite_member", { p_household: householdId, p_email: email, p_role: role });
   if (error) return { error: friendly(error.message) };
   revalidatePath("/household");
-  return { ok: `Na-invite si ${email}. Sabihan siyang buksan ang KABAN at gumawa ng account gamit ang email na ito.` };
+  return { ok: `Invited ${email}. Ask them to open KABAN and create an account with this email.` };
 }
 
 export async function revokeInvite(form: FormData) {
@@ -38,7 +38,7 @@ export async function createToken(_: FormState, form: FormData): Promise<FormSta
     .eq("is_archived", false)
     .is("owner_user_id", null);
   const usable = (accounts ?? []).filter((a) => a.is_spendable || a.class === "liability");
-  if (usable.length === 0) return { error: "Wala pang account na puwedeng gastusin." };
+  if (usable.length === 0) return { error: "There are no spending accounts yet." };
   const def = usable.find((a) => a.kind === "cash") ?? usable[0];
 
   const { data, error } = await supabase

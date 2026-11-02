@@ -4,18 +4,18 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 const tabs = [
-  { href: "/", label: "Kaban", icon: "M3 11a9 7 0 0 1 18 0M3 11h18v9a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1z" },
-  { href: "/transactions", label: "Talaan", icon: "M5 6h14M5 12h14M5 18h9" },
-  { href: "/add", label: "Itala", icon: "M12 5v14M5 12h14", primary: true },
+  { href: "/", label: "Home", icon: "M3 11a9 7 0 0 1 18 0M3 11h18v9a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1z" },
+  { href: "/transactions", label: "Activity", icon: "M5 6h14M5 12h14M5 18h9" },
+  { href: "/add", label: "Add", icon: "M12 5v14M5 12h14", primary: true },
   { href: "/accounts", label: "Accounts", icon: "M3 7h18v12H3zM3 11h18M16 15h2" },
-  { href: "/household", label: "Bahay", icon: "M4 11l8-6 8 6v9H4zM10 20v-5h4v5" },
+  { href: "/household", label: "Household", icon: "M4 11l8-6 8 6v9H4zM10 20v-5h4v5" },
 ];
 
 export function BottomNav() {
   const path = usePathname();
   return (
     <nav
-      aria-label="Pangunahing navigation"
+      aria-label="Main navigation"
       className="fixed inset-x-0 bottom-0 z-20 border-t border-line bg-paper/95 backdrop-blur"
     >
       <ul className="mx-auto flex max-w-md items-stretch justify-around px-2 pb-[max(env(safe-area-inset-bottom),0.5rem)] pt-2">

@@ -12,8 +12,7 @@ export default async function AccountsPage() {
       <h1 className="text-[24px] font-semibold tracking-tight">Accounts</h1>
       {untouched > 0 && (
         <p className="mt-2 text-[14px] text-muted">
-          Para tama ang kuwenta, buksan ang bawat account at ilagay ang totoong laman nito ngayon. Sa credit card, ilagay ang
-          utang.
+          For accurate numbers, open each account and enter what it really holds today. For credit cards, enter what you owe.
         </p>
       )}
 
@@ -27,7 +26,7 @@ export default async function AccountsPage() {
                   <span>
                     {a.name}
                     {a.owner_user_id && <span className="ml-2 text-[12px] text-muted">personal</span>}
-                    {a.kind === "savings" && <span className="ml-2 text-[12px] text-muted">hindi kasama sa panggastos</span>}
+                    {a.kind === "savings" && <span className="ml-2 text-[12px] text-muted">not spending money</span>}
                   </span>
                   <Balance account={a} />
                 </Link>
@@ -43,9 +42,9 @@ export default async function AccountsPage() {
 function Balance({ account }: { account: { class: string; balance: number } }) {
   if (account.class === "liability") {
     return account.balance < 0 ? (
-      <span className="font-medium text-rust">Utang {peso(-account.balance)}</span>
+      <span className="font-medium text-rust">Owe {peso(-account.balance)}</span>
     ) : (
-      <span className="text-muted">Walang utang</span>
+      <span className="text-muted">No debt</span>
     );
   }
   return <span className={`font-medium ${account.balance < 0 ? "text-rust" : ""}`}>{peso(account.balance)}</span>;

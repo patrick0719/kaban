@@ -3,7 +3,7 @@ import "./globals.css";
 
 export const metadata: Metadata = {
   title: "KABAN",
-  description: "Pera ng bahay, nasa isang lugar.",
+  description: "Your money. Your household. One place.",
   manifest: "/manifest.webmanifest",
   appleWebApp: { capable: true, title: "KABAN", statusBarStyle: "default" },
   icons: { icon: "/icons/icon-192.png", apple: "/apple-touch-icon.png" },
@@ -18,7 +18,7 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="fil">
+    <html lang="en">
       <body className="min-h-dvh antialiased">{children}</body>
     </html>
   );

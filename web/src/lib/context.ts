@@ -1,16 +1,20 @@
+import { cache } from "react";
 import { redirect } from "next/navigation";
 import { createClient } from "./supabase/server";
 
 import { GROUP_ORDER, type Account, type Category, type Role } from "./shared";
 export { GROUP_LABEL, groupAccounts, type Account, type Category, type Role } from "./shared";
 
-/** The signed-in user and their household. Redirects if either is missing. */
-export async function getContext() {
+/**
+ * The signed-in user and their household. Redirects if either is missing.
+ * Wrapped in cache(): runs once per request even if several components ask.
+ */
+export const getContext = cache(async () => {
   const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  if (!user) redirect("/login");
+  const { data: auth } = await supabase.auth.getClaims();
+  const claims = auth?.claims;
+  if (!claims?.sub) redirect("/login");
+  const user = { id: claims.sub, email: (claims.email as string | undefined) ?? "" };
 
   const { data: membership } = await supabase
     .from("household_members")
@@ -38,7 +42,7 @@ export async function getContext() {
     canWrite: membership.role !== "viewer",
     isAdmin: membership.role === "owner" || membership.role === "admin",
   };
-}
+});
 
 type Ctx = Awaited<ReturnType<typeof getContext>>;
 

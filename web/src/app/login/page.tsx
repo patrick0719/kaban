@@ -12,12 +12,12 @@ export default function LoginPage() {
     <main className="mx-auto flex min-h-dvh max-w-sm flex-col justify-center px-6 py-12">
       <Wordmark className="mb-10" />
       <h1 className="text-[28px] font-semibold leading-tight tracking-tight">
-        {mode === "in" ? "Mag-log in" : "Gumawa ng account"}
+        {mode === "in" ? "Log in" : "Create account"}
       </h1>
       <p className="mt-2 text-[15px] text-muted">
         {mode === "in"
-          ? "Pera ng bahay, nasa isang lugar."
-          : "Gamitin ang email kung saan ka in-invite, para makapasok ka sa household."}
+          ? "Your money. Your household. One place."
+          : "Use the email address you were invited with, so you join the right household."}
       </p>
 
       <form action={action} className="mt-8 space-y-4">
@@ -40,7 +40,7 @@ export default function LoginPage() {
         {state.info && <p className="rounded-lg bg-jade-soft px-3 py-2 text-sm text-jade">{state.info}</p>}
 
         <button className="btn-primary w-full" disabled={pending}>
-          {pending ? "Sandali…" : mode === "in" ? "Mag-log in" : "Gumawa ng account"}
+          {pending ? "One moment…" : mode === "in" ? "Log in" : "Create account"}
         </button>
       </form>
 
@@ -49,7 +49,7 @@ export default function LoginPage() {
         onClick={() => setMode(mode === "in" ? "up" : "in")}
         className="mt-6 text-sm text-muted underline underline-offset-4"
       >
-        {mode === "in" ? "In-invite ka? Gumawa ng account" : "May account na? Mag-log in"}
+        {mode === "in" ? "Invited? Create an account" : "Already have an account? Log in"}
       </button>
     </main>
   );

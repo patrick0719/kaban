@@ -9,9 +9,9 @@ type Acc = { id: string; name: string; kind: Account["kind"]; cls: Account["clas
 type Kind = "expense" | "income" | "transfer";
 
 const KINDS: { value: Kind; label: string }[] = [
-  { value: "expense", label: "Gastos" },
-  { value: "income", label: "Kita" },
-  { value: "transfer", label: "Lipat" },
+  { value: "expense", label: "Expense" },
+  { value: "income", label: "Income" },
+  { value: "transfer", label: "Transfer" },
 ];
 
 export function AddForm({ accounts, categories, today }: { accounts: Acc[]; categories: Category[]; today: string }) {
@@ -29,7 +29,7 @@ export function AddForm({ accounts, categories, today }: { accounts: Acc[]; cate
       <input type="hidden" name="kind" value={kind} />
       <input type="hidden" name="request_id" value={requestId} />
 
-      <div role="radiogroup" aria-label="Uri" className="grid grid-cols-3 rounded-lg border border-line bg-white p-1">
+      <div role="radiogroup" aria-label="Type" className="grid grid-cols-3 rounded-lg border border-line bg-white p-1">
         {KINDS.map((k) => (
           <button
             key={k.value}
@@ -45,7 +45,7 @@ export function AddForm({ accounts, categories, today }: { accounts: Acc[]; cate
       </div>
 
       <label className="block">
-        <span className="mb-1.5 block text-sm font-medium">Magkano</span>
+        <span className="mb-1.5 block text-sm font-medium">Amount</span>
         <div className="flex items-baseline gap-2 border-b-2 border-ink pb-1">
           <span className="text-[28px] font-medium text-muted">₱</span>
           <input
@@ -63,7 +63,7 @@ export function AddForm({ accounts, categories, today }: { accounts: Acc[]; cate
       {kind !== "transfer" ? (
         <>
           <fieldset>
-            <legend className="mb-2 text-sm font-medium">{kind === "income" ? "Saan galing ang kita" : "Saan ginastos"}</legend>
+            <legend className="mb-2 text-sm font-medium">{kind === "income" ? "Income type" : "What was it for"}</legend>
             <div className="flex flex-wrap gap-2">
               {cats.map((c) => (
                 <label key={c.id} className="cursor-pointer">
@@ -75,30 +75,30 @@ export function AddForm({ accounts, categories, today }: { accounts: Acc[]; cate
               ))}
             </div>
           </fieldset>
-          <AccountSelect name="account" label={kind === "income" ? "Saan pumasok" : "Saan galing ang pera"} accounts={sources} />
+          <AccountSelect name="account" label={kind === "income" ? "Received in" : "Paid from"} accounts={sources} />
         </>
       ) : (
         <>
-          <AccountSelect name="from" label="Galing sa" accounts={accounts.filter((a) => a.cls === "asset")} />
-          <AccountSelect name="to" label="Papunta sa" accounts={accounts} hint="Para magbayad ng credit card, piliin ang card dito." />
+          <AccountSelect name="from" label="From" accounts={accounts.filter((a) => a.cls === "asset")} />
+          <AccountSelect name="to" label="To" accounts={accounts} hint="To pay a credit card, choose the card here." />
         </>
       )}
 
       <div className="grid grid-cols-[1fr_1.4fr] gap-3">
         <label className="block">
-          <span className="mb-1.5 block text-sm font-medium">Petsa</span>
+          <span className="mb-1.5 block text-sm font-medium">Date</span>
           <input name="date" type="date" defaultValue={today} max={today} required className="field" />
         </label>
         <label className="block">
-          <span className="mb-1.5 block text-sm font-medium">Tala (opsyonal)</span>
-          <input name="note" maxLength={200} placeholder="hal. Jollibee" className="field" />
+          <span className="mb-1.5 block text-sm font-medium">Note (optional)</span>
+          <input name="note" maxLength={200} placeholder="e.g. Jollibee" className="field" />
         </label>
       </div>
 
       {state.error && <p className="rounded-lg bg-rust-soft px-3 py-2 text-sm text-rust">{state.error}</p>}
 
       <button className="btn-primary w-full" disabled={pending || !ready}>
-        {pending ? "Sine-save…" : kind === "expense" ? "I-save ang gastos" : kind === "income" ? "I-save ang kita" : "I-save ang lipat"}
+        {pending ? "Saving…" : kind === "expense" ? "Save expense" : kind === "income" ? "Save income" : "Save transfer"}
       </button>
     </form>
   );
@@ -112,7 +112,7 @@ function AccountSelect({ name, label, accounts, hint }: { name: string; label: s
       <span className="mb-1.5 block text-sm font-medium">{label}</span>
       <select name={name} required defaultValue="" className="field appearance-none">
         <option value="" disabled>
-          Pumili…
+          Choose…
         </option>
         {[...groups.entries()].map(([g, list]) => (
           <optgroup key={g} label={g}>

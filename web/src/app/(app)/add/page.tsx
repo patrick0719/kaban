@@ -7,9 +7,9 @@ export default async function AddPage() {
   const [accounts, categories] = await Promise.all([getAccounts(ctx), getCategories(ctx)]);
   return (
     <div>
-      <h1 className="text-[24px] font-semibold tracking-tight">Itala</h1>
+      <h1 className="text-[24px] font-semibold tracking-tight">Add</h1>
       {!ctx.canWrite ? (
-        <p className="mt-4 text-muted">Viewer ka lang sa household na ito, kaya hindi ka makakapagtala.</p>
+        <p className="mt-4 text-muted">You are a viewer in this household, so you cannot add entries.</p>
       ) : (
         <AddForm
           accounts={accounts.map(({ id, name, kind, class: cls, is_spendable }) => ({ id, name, kind, cls, is_spendable }))}

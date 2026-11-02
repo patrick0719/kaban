@@ -28,11 +28,11 @@ export const GROUP_ORDER: Record<Account["kind"], number> = {
 export const GROUP_LABEL: Record<Account["kind"], string> = {
   cash: "Cash",
   ewallet: "E-wallet",
-  bank: "Bangko",
+  bank: "Bank",
   credit_card: "Credit card",
   loan: "Credit card",
-  savings: "Ipon",
-  other: "Iba pa",
+  savings: "Savings",
+  other: "Other",
 };
 
 /** Accounts grouped for display: [["Cash", [...]], ["E-wallet", [...]], ...] */

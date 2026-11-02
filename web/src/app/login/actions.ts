@@ -8,13 +8,13 @@ export type AuthState = { error?: string; info?: string; email?: string };
 export async function signIn(_: AuthState, form: FormData): Promise<AuthState> {
   const email = String(form.get("email") ?? "").trim();
   const password = String(form.get("password") ?? "");
-  if (!email || !password) return { error: "Ilagay ang email at password.", email };
+  if (!email || !password) return { error: "Enter your email and password.", email };
 
   const supabase = await createClient();
   const { error } = await supabase.auth.signInWithPassword({ email, password });
   if (error) {
-    if (/confirm/i.test(error.message)) return { error: "Kumpirmahin muna ang email mo. Tingnan ang inbox.", email };
-    return { error: "Mali ang email o password.", email };
+    if (/confirm/i.test(error.message)) return { error: "Confirm your email first. Check your inbox.", email };
+    return { error: "Wrong email or password.", email };
   }
   redirect("/");
 }
@@ -22,13 +22,13 @@ export async function signIn(_: AuthState, form: FormData): Promise<AuthState> {
 export async function signUp(_: AuthState, form: FormData): Promise<AuthState> {
   const email = String(form.get("email") ?? "").trim();
   const password = String(form.get("password") ?? "");
-  if (!email) return { error: "Ilagay ang email na in-invite sa'yo.", email };
-  if (password.length < 8) return { error: "Hindi bababa sa 8 characters ang password.", email };
+  if (!email) return { error: "Enter the email address you were invited with.", email };
+  if (password.length < 8) return { error: "Use a password with at least 8 characters.", email };
 
   const supabase = await createClient();
   const { data, error } = await supabase.auth.signUp({ email, password });
   if (error) return { error: error.message, email };
-  if (!data.session) return { info: "Nagpadala kami ng link sa email mo. I-click ito, saka mag-log in dito.", email };
+  if (!data.session) return { info: "We sent a link to your email. Open it, then log in here.", email };
   redirect("/");
 }
 

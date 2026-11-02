@@ -6,6 +6,10 @@ const nextConfig: NextConfig = {
     // Saving anything in the app refreshes them right away.
     staleTimes: { dynamic: 30, static: 180 },
   },
+  async headers() {
+    // The service worker must never be cached, so fixes reach phones right away.
+    return [{ source: "/sw.js", headers: [{ key: "Cache-Control", value: "no-cache, no-store, must-revalidate" }] }];
+  },
 };
 
 export default nextConfig;

@@ -99,10 +99,16 @@ export default async function Dashboard() {
 
       {dueBills.length > 0 && (
         <section className="mt-8">
-          <h2 className="text-[17px] font-semibold">Upcoming bills</h2>
+          <div className="flex items-baseline justify-between">
+            <h2 className="text-[17px] font-semibold">Upcoming bills</h2>
+            <Link href="/bills" className="text-[13px] text-jade">
+              See all
+            </Link>
+          </div>
           <ul className="mt-2 divide-y divide-line">
             {dueBills.map((b) => (
-              <li key={b.id} className="flex items-baseline justify-between py-2.5 text-[15px]">
+              <li key={b.id}>
+                <Link href={`/bills/${b.id}`} className="flex items-baseline justify-between py-2.5 text-[15px] active:bg-line/40">
                 <span>
                   {b.name}
                   <span className={`ml-2 text-[13px] ${b.due_on < today ? "text-rust" : "text-muted"}`}>
@@ -111,6 +117,7 @@ export default async function Dashboard() {
                   </span>
                 </span>
                 <span className="font-medium">{peso(Number(b.remaining))}</span>
+                </Link>
               </li>
             ))}
           </ul>

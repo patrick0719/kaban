@@ -18,7 +18,7 @@ export const getContext = cache(async () => {
 
   const { data: membership } = await supabase
     .from("household_members")
-    .select("household_id, role, households(name, card_debt_mode, reserve_days, reserve_horizon)")
+    .select("household_id, role, households(name, card_debt_mode, reserve_days, reserve_horizon, remind_days_before)")
     .eq("user_id", user.id)
     .order("joined_at")
     .limit(1)
@@ -31,6 +31,7 @@ export const getContext = cache(async () => {
     card_debt_mode: "statement" | "full";
     reserve_days: number;
     reserve_horizon: string;
+    remind_days_before: number;
   };
 
   return {

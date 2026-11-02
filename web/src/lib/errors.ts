@@ -10,5 +10,9 @@ export function friendly(message: string | undefined): string {
   if (/invite not valid/i.test(m)) return "This invite is no longer valid. Ask for a new one.";
   if (/at most 5 active/i.test(m)) return "You can have up to 5 Back Tap tokens. Revoke one first.";
   if (/cannot be used for quick entry/i.test(m)) return "Savings accounts cannot be used with Back Tap.";
+  if (/less than what was already paid/i.test(m)) return "That is less than what was already paid for this month.";
+  if (/within the last month or later/i.test(m)) return "Choose a due date from the last month or later.";
+  if (/pay a credit card bill with a transfer/i.test(m)) return "Credit card bills are paid by moving money into the card.";
+  if (/bill not available/i.test(m)) return "This bill is not available to you.";
   return m.replace(/^KABAN:\s*/, "") || "Something went wrong. Try again.";
 }

@@ -3,6 +3,7 @@ import { getAccounts, getContext } from "@/lib/context";
 import { describe, getTransactions } from "@/lib/transactions";
 import { longDate, peso, todayManila } from "@/lib/money";
 import { TxnRow } from "@/components/TxnRow";
+import { ActivityTabs } from "@/components/ActivityTabs";
 
 export default async function TransactionsPage({ searchParams }: { searchParams: Promise<{ m?: string }> }) {
   const ctx = await getContext();
@@ -24,6 +25,7 @@ export default async function TransactionsPage({ searchParams }: { searchParams:
 
   return (
     <div>
+      <ActivityTabs current="/transactions" month={month} />
       <div className="flex items-center justify-between">
         <Link href={`/transactions?m=${shiftMonth(month, -1)}`} aria-label="Previous month" className="-ml-2 p-2 text-muted">
           <Chevron flip />

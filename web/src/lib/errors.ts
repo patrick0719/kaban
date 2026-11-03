@@ -20,5 +20,10 @@ export function friendly(message: string | undefined): string {
   if (/target date must be today or later/i.test(m)) return "Choose a target date from today onward.";
   if (/goal not available/i.test(m)) return "This goal is not available to you.";
   if (/set money aside in a spending account/i.test(m)) return "Set money aside in cash, a bank or an e-wallet.";
+  if (/already recorded or skipped/i.test(m)) return "This one was already recorded or skipped. Refresh to see the next one.";
+  if (/repeating entry was stopped/i.test(m)) return "This repeating entry was stopped.";
+  if (/repeating entry not available/i.test(m)) return "This repeating entry is not available to you.";
+  if (/within the last month or the coming year/i.test(m)) return "Choose a next date from the last month up to a year from now.";
+  if (/income must go into a money account/i.test(m)) return "Income goes into cash, a bank or an e-wallet, not a card.";
   return m.replace(/^KABAN:\s*/, "") || "Something went wrong. Try again.";
 }

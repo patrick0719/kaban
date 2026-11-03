@@ -7,7 +7,7 @@ const tabs = [
   { href: "/", label: "Home", icon: "M3 11a9 7 0 0 1 18 0M3 11h18v9a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1z" },
   { href: "/transactions", label: "Activity", icon: "M5 6h14M5 12h14M5 18h9", match: ["/transactions", "/reports"] },
   { href: "/add", label: "Add", icon: "M12 5v14M5 12h14", primary: true },
-  { href: "/bills", label: "Plan", icon: "M4 5h16v15H4zM4 9h16M8 3v4M16 3v4M8 13h3M8 16h6", match: ["/bills", "/goals", "/budget"] },
+  { href: "/bills", label: "Plan", icon: "M4 5h16v15H4zM4 9h16M8 3v4M16 3v4M8 13h3M8 16h6", match: ["/bills", "/repeating", "/goals", "/budget"] },
   { href: "/household", label: "More", icon: "M4 12a1.6 1.6 0 1 0 3.2 0a1.6 1.6 0 1 0-3.2 0M10.4 12a1.6 1.6 0 1 0 3.2 0a1.6 1.6 0 1 0-3.2 0M16.8 12a1.6 1.6 0 1 0 3.2 0a1.6 1.6 0 1 0-3.2 0", match: ["/household", "/accounts"] },
 ];
 

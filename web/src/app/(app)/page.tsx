@@ -7,6 +7,8 @@ import { Progress } from "@/components/Progress";
 import { getGoals, percent } from "@/lib/goals";
 import { getBudget } from "@/lib/budget";
 import { Wordmark } from "@/components/Wordmark";
+import { getRecurring, needsAttention, scheduleText } from "@/lib/recurring";
+import { ConfirmForm } from "./repeating/ConfirmForm";
 
 type Available = {
   spendable_balance: number;
@@ -24,7 +26,7 @@ export default async function Dashboard() {
   const today = todayManila();
   const monthStart = `${today.slice(0, 7)}-01`;
 
-  const [avail, summary, accounts, recent, bills, { goals }, budget] = await Promise.all([
+  const [avail, summary, accounts, recent, bills, { goals }, budget, recurring] = await Promise.all([
     supabase.rpc("available_to_spend", { p_household: householdId, p_scope: "all" }).single<Available>(),
     supabase
       .rpc("monthly_summary", { p_household: householdId, p_month: monthStart })
@@ -40,7 +42,9 @@ export default async function Dashboard() {
       .order("due_on"),
     getGoals(supabase, householdId),
     getBudget(supabase, householdId, today),
+    getRecurring(supabase, householdId),
   ]);
+  const { toConfirm, failed } = needsAttention(recurring, today);
   const budgeted = budget.filter((r) => r.budget != null);
   const budgetTotal = budgeted.reduce((s, r) => s + (r.budget ?? 0), 0);
   const budgetSpent = budgeted.reduce((s, r) => s + r.spent, 0);
@@ -122,6 +126,52 @@ export default async function Dashboard() {
           )}
         </Link>
       </section>
+
+      {(toConfirm.length > 0 || failed.length > 0) && (
+        <section className="mt-8" aria-labelledby="waiting-title">
+          <div className="flex items-baseline justify-between">
+            <h2 id="waiting-title" className="text-[17px] font-semibold">
+              Waiting for you
+            </h2>
+            <Link href="/repeating" className="text-[13px] text-jade">
+              Repeating
+            </Link>
+          </div>
+          <ul className="mt-1 divide-y divide-line">
+            {toConfirm.map((r) => (
+              <li key={r.id} className="py-3">
+                <Link href={`/repeating/${r.id}`} className="flex items-baseline justify-between text-[15px]">
+                  <span className="font-medium">{r.name}</span>
+                  <span className={`text-[13px] ${r.next_due < today ? "text-rust" : "text-muted"}`}>
+                    {r.next_due < today ? `was due ${shortDate(r.next_due)}` : "due today"}
+                  </span>
+                </Link>
+                {ctx.canWrite ? (
+                  <ConfirmForm
+                    compact
+                    id={r.id}
+                    due={r.next_due}
+                    amount={amountText(r.amount).replace(/,/g, "")}
+                    date={r.next_due}
+                    today={today}
+                    verb="Record"
+                  />
+                ) : (
+                  <p className="mt-1 text-[13px] text-muted">{scheduleText(r)}</p>
+                )}
+              </li>
+            ))}
+            {failed.map((r) => (
+              <li key={r.id} className="py-3">
+                <Link href={`/repeating/${r.id}`} className="flex items-baseline justify-between text-[15px]">
+                  <span className="font-medium">{r.name}</span>
+                  <span className="text-[13px] text-rust">could not record automatically</span>
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
 
       {dueBills.length > 0 && (
         <section className="mt-8">

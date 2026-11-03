@@ -2,12 +2,13 @@ import Link from "next/link";
 
 const TABS = [
   { href: "/bills", label: "Bills" },
+  { href: "/repeating", label: "Repeating" },
   { href: "/goals", label: "Goals" },
   { href: "/budget", label: "Budget" },
 ];
 
 /** Switches between the parts of the Plan tab. */
-export function PlanTabs({ current }: { current: "/bills" | "/goals" | "/budget" }) {
+export function PlanTabs({ current }: { current: "/bills" | "/repeating" | "/goals" | "/budget" }) {
   return (
     <nav aria-label="Plan" className="mb-5 flex gap-1 rounded-lg border border-line bg-white p-1">
       {TABS.map((t) => (

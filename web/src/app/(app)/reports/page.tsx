@@ -2,26 +2,19 @@ import Link from "next/link";
 import { getAccounts, getContext } from "@/lib/context";
 import { describe, getTransactions } from "@/lib/transactions";
 import { getGoals } from "@/lib/goals";
-import { peso, shortDate, todayManila } from "@/lib/money";
+import { peso, shortDate } from "@/lib/money";
+import { currentMonth, monthName, parseMonth, shiftMonth } from "@/lib/month";
 import { ActivityTabs } from "@/components/ActivityTabs";
 import { TrendChart, type TrendPoint } from "./TrendChart";
 
 const SPENT = "#b8601a";
 
-function shiftMonth(ym: string, by: number) {
-  const [y, mo] = ym.split("-").map(Number);
-  return new Date(Date.UTC(y, mo - 1 + by, 1)).toISOString().slice(0, 7);
-}
-const monthName = (iso: string, style: "long" | "short") =>
-  new Intl.DateTimeFormat("en-PH", { month: style, ...(style === "long" ? { year: "numeric" } : {}), timeZone: "UTC" }).format(
-    new Date(`${iso.slice(0, 7)}-01T00:00:00Z`),
-  );
 
 export default async function ReportsPage({ searchParams }: { searchParams: Promise<{ m?: string }> }) {
   const ctx = await getContext();
   const { m } = await searchParams;
-  const current = todayManila().slice(0, 7);
-  const month = /^\d{4}-\d{2}$/.test(m ?? "") && m! <= current ? m! : current;
+  const current = currentMonth();
+  const month = parseMonth(m);
   const first = `${month}-01`;
 
   const [{ data: cats }, { data: trend }, txns, accounts, { goals }] = await Promise.all([

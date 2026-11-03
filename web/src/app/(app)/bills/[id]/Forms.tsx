@@ -1,7 +1,7 @@
 "use client";
 
-import { useActionState, useEffect, useState } from "react";
-import { useSubmit } from "@/components/useSubmit";
+import { useActionState, useState } from "react";
+import { useRequestKey, useSubmit } from "@/components/useSubmit";
 import { payBill, setAmount, type BillState } from "../actions";
 
 type Option = { id: string; name: string; group: string };
@@ -23,10 +23,7 @@ export function PayForm({
 }) {
   const [state, action, pending] = useActionState<BillState, FormData>(payBill, {});
   const { onSubmit, ready } = useSubmit(action);
-  const [requestId, setRequestId] = useState(() => crypto.randomUUID()); // a double tap pays once
-  useEffect(() => {
-    if (state.ok) setRequestId(crypto.randomUUID());
-  }, [state]);
+  const requestId = useRequestKey(state); // a double tap pays once
 
   const groups = new Map<string, Option[]>();
   for (const a of accounts) groups.set(a.group, [...(groups.get(a.group) ?? []), a]);

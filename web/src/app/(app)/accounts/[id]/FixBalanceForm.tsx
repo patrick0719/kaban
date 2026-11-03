@@ -1,17 +1,14 @@
 "use client";
 
-import { useSubmit } from "@/components/useSubmit";
-import { useActionState, useEffect, useState } from "react";
+import { useRequestKey, useSubmit } from "@/components/useSubmit";
+import { useActionState } from "react";
 import { fixBalance, type FixState } from "./actions";
 
 export function FixBalanceForm({ id, isDebt, current }: { id: string; isDebt: boolean; current: string }) {
   const [state, action, pending] = useActionState<FixState, FormData>(fixBalance, {});
   const { onSubmit, ready } = useSubmit(action);
   // One key per attempt: a double tap saves once; after a save, the next correction gets a new key.
-  const [requestId, setRequestId] = useState(() => crypto.randomUUID());
-  useEffect(() => {
-    if (state.ok) setRequestId(crypto.randomUUID());
-  }, [state]);
+  const requestId = useRequestKey(state);
   return (
     <form onSubmit={onSubmit} className="space-y-3">
       <input type="hidden" name="id" value={id} />

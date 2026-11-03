@@ -1,7 +1,7 @@
 "use client";
 
 import { useActionState, useEffect, useRef, useState } from "react";
-import { useSubmit } from "@/components/useSubmit";
+import { useRequestKey, useSubmit } from "@/components/useSubmit";
 import { archiveGoal, moveGoalMoney, type GoalState } from "../actions";
 
 type Option = { id: string; name: string; hint?: string };
@@ -26,11 +26,10 @@ export function MoveMoney({
   const [open, setOpen] = useState(Boolean(startOpen));
   const [state, action, pending] = useActionState<GoalState, FormData>(moveGoalMoney, {});
   const { onSubmit, ready } = useSubmit(action);
-  const [requestId, setRequestId] = useState(() => crypto.randomUUID()); // a double tap moves money once
+  const requestId = useRequestKey(state); // a double tap moves money once
   const formRef = useRef<HTMLFormElement>(null);
   useEffect(() => {
     if (state.ok) {
-      setRequestId(crypto.randomUUID());
       // ready for the next amount; keep the chosen account
       const amount = formRef.current?.querySelector<HTMLInputElement>('input[name="amount"]');
       if (amount) amount.value = "";

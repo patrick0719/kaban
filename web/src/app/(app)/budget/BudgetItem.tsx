@@ -1,7 +1,7 @@
 "use client";
 
-import { useActionState, useEffect, useState } from "react";
-import { useSubmit } from "@/components/useSubmit";
+import { useActionState, useState } from "react";
+import { useOnResult, useSubmit } from "@/components/useSubmit";
 import { setBudget, type BudgetState } from "./actions";
 
 const fmt = new Intl.NumberFormat("en-PH", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
@@ -22,9 +22,9 @@ export function BudgetItem({ categoryId, name, budget, spent, suggested, status,
   const [editing, setEditing] = useState(false);
   const [state, action, pending] = useActionState<BudgetState, FormData>(setBudget, {});
   const { onSubmit, ready } = useSubmit(action);
-  useEffect(() => {
-    if (state.ok) setEditing(false);
-  }, [state]);
+  useOnResult(state, (s) => {
+    if (s.ok) setEditing(false);
+  });
 
   const pct = budget ? Math.min(100, Math.round((spent / budget) * 100)) : 0;
 

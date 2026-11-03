@@ -1,14 +1,15 @@
 import Link from "next/link";
 import { getAccounts, getContext } from "@/lib/context";
 import { describe, getTransactions } from "@/lib/transactions";
-import { longDate, peso, todayManila } from "@/lib/money";
+import { longDate, peso } from "@/lib/money";
+import { currentMonth, monthName, parseMonth, shiftMonth } from "@/lib/month";
 import { TxnRow } from "@/components/TxnRow";
 import { ActivityTabs } from "@/components/ActivityTabs";
 
 export default async function TransactionsPage({ searchParams }: { searchParams: Promise<{ m?: string }> }) {
   const ctx = await getContext();
   const { m } = await searchParams;
-  const month = /^\d{4}-\d{2}$/.test(m ?? "") ? m! : todayManila().slice(0, 7);
+  const month = parseMonth(m, { allowFuture: true });
   const from = `${month}-01`;
   const to = shiftMonth(month, 1) + "-01";
 
@@ -18,10 +19,8 @@ export default async function TransactionsPage({ searchParams }: { searchParams:
   const days = new Map<string, typeof txns>();
   for (const t of txns) days.set(t.occurred_on, [...(days.get(t.occurred_on) ?? []), t]);
 
-  const label = new Intl.DateTimeFormat("en-PH", { month: "long", year: "numeric", timeZone: "UTC" }).format(
-    new Date(`${from}T00:00:00Z`),
-  );
-  const isCurrent = month === todayManila().slice(0, 7);
+  const label = monthName(month);
+  const isCurrent = month === currentMonth();
 
   return (
     <div>
@@ -64,12 +63,6 @@ export default async function TransactionsPage({ searchParams }: { searchParams:
       )}
     </div>
   );
-}
-
-function shiftMonth(ym: string, by: number) {
-  const [y, mo] = ym.split("-").map(Number);
-  const d = new Date(Date.UTC(y, mo - 1 + by, 1));
-  return d.toISOString().slice(0, 7);
 }
 
 function Chevron({ flip }: { flip?: boolean }) {

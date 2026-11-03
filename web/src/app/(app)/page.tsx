@@ -5,6 +5,7 @@ import { amountText, peso, shortDate, todayManila } from "@/lib/money";
 import { TxnRow } from "@/components/TxnRow";
 import { Progress } from "@/components/Progress";
 import { getGoals, percent } from "@/lib/goals";
+import { getBudget } from "@/lib/budget";
 import { Wordmark } from "@/components/Wordmark";
 
 type Available = {
@@ -23,7 +24,7 @@ export default async function Dashboard() {
   const today = todayManila();
   const monthStart = `${today.slice(0, 7)}-01`;
 
-  const [avail, summary, accounts, recent, bills, { goals }] = await Promise.all([
+  const [avail, summary, accounts, recent, bills, { goals }, budget] = await Promise.all([
     supabase.rpc("available_to_spend", { p_household: householdId, p_scope: "all" }).single<Available>(),
     supabase
       .rpc("monthly_summary", { p_household: householdId, p_month: monthStart })
@@ -38,7 +39,12 @@ export default async function Dashboard() {
       .lte("due_on", addDays(today, 120))
       .order("due_on"),
     getGoals(supabase, householdId),
+    getBudget(supabase, householdId, today),
   ]);
+  const budgeted = budget.filter((r) => r.budget != null);
+  const budgetTotal = budgeted.reduce((s, r) => s + (r.budget ?? 0), 0);
+  const budgetSpent = budgeted.reduce((s, r) => s + r.spent, 0);
+  const overCount = budgeted.filter((r) => r.spent > (r.budget ?? 0)).length;
 
   const a = avail.data;
   // Same window the reservation uses, so the list explains the "Nakareserba" line.
@@ -98,6 +104,23 @@ export default async function Dashboard() {
           <p className="mt-0.5 text-[18px] font-semibold">{peso(summary.data?.expense ?? 0)}</p>
         </div>
         </div>
+        <Link href="/budget" className="mt-3 flex items-baseline justify-between border-t border-line pt-3 text-[14px]">
+          {budgetTotal > 0 ? (
+            <>
+              <span className={budgetSpent > budgetTotal ? "text-rust" : ""}>
+                {budgetSpent > budgetTotal ? `${peso(budgetSpent - budgetTotal)} over budget` : `${peso(budgetTotal - budgetSpent)} left in budget`}
+              </span>
+              <span className={overCount ? "text-rust" : "text-muted"}>
+                {overCount ? `${overCount} categor${overCount === 1 ? "y" : "ies"} over` : "Budget"}
+              </span>
+            </>
+          ) : (
+            <>
+              <span className="text-muted">No budget yet</span>
+              <span className="text-jade">Set one up</span>
+            </>
+          )}
+        </Link>
       </section>
 
       {dueBills.length > 0 && (
